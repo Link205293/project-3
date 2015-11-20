@@ -13,7 +13,7 @@ float friction = .986;
 // dummy check varibles
 float button1X, button1Y = 50, button1q = 50, button1p = 20;
 float checkX[] = new float[16];
-//float checkY[] = new float[15];
+float checkY[] = new float[16];
 float ballX[] = new float[16];
 float ballY[] = new float[16];
 float ballDX[] = new float[16];
@@ -50,12 +50,12 @@ void reset()
 {
   ballX[0] = mid/2;
   ballY[0] = (top + bot)/2;
-  ballDX[0] = 3;
-  ballDY[0] = 3;
+  ballDX[0] = 0;
+  ballDY[0] = 0;
   for( int i = 1; i < 16; i = i + 1)
   {
-    checkX[i] = random(mid + 15, right - 15);
-    ballY[i] = random(top + 15, bot - 15); 
+    checkX[i] = random(mid + 30, right - 30);
+    checkY[i] = random(top + 30, bot - 30); 
     ballDX[i] = 0;
     ballDY[i] = 0;
   }
@@ -63,13 +63,22 @@ void reset()
   // isn't on top of another ball
   for( int i = 1; i < 16; i = i + 1)
   {
-    for( int j = i + 1; j < 16; j = j +1)
+    for( int j = 1; j < 16; j = j +1)
     {
-      while(abs(checkX[i] - checkX[j]) < 15 )
-       {
-         checkX[i] = random(mid + 15, right - 15);
-       }
-       ballX[i] = checkX[i];
+      if( j == i)
+      {
+        ballX[i] = checkX[i];
+        ballY[i] = checkY[i];
+      }
+      else
+      {
+        while(dist(checkX[i], checkY[i], checkX[j], checkY[j] ) < 60)
+         {
+           checkX[i] = random(mid + 30, right - 30);
+           checkY[i] = random(top + 30, bot - 30);
+         }
+      }
+       
     }
   }
   cue = new Ball(ballX[0], ballY[0], ballDX[0], ballDY[0], #FFFFFF);
@@ -153,31 +162,31 @@ class Ball
   void show()
   {
     fill(c);
-    ellipse(x, y, 30, 30);
+    ellipse(x, y, 60, 60);
     fill(0);
   }
   
   void move()
   {
-    if (x > width - 15)
+    if (x > width - 30)
     {
       dx = - dx;
-      x = width - 15;
+      x = width - 30;
     }
-    else if ( x < 15)
+    else if ( x < 30)
     {
       dx = - dx;
-      x = 15;
+      x = 30;
     }
-    if (y > height - 15)
+    if (y > height - 30)
     {
       dy = - dy;
-      y = height - 15;
+      y = height - 30;
     }
-    else if ( y < 15)
+    else if ( y < 30)
     {
       dy = - dy;
-      y = 15;
+      y = 30;
     }
     x = x + dx;
     y = y + dy;
@@ -185,7 +194,7 @@ class Ball
   
   boolean hit( float x, float y)
   {
-    if( dist ( x, y, this.x, this.y) < 30) 
+    if( dist ( x, y, this.x, this.y) < 60) 
     {
       return true;
     }
@@ -200,4 +209,15 @@ void keyPressed()
   {
     reset();
   }
+}
+
+void mousePressed()
+{
+  float tempx;
+  float tempy;
+  tempx = ( cue.x - mouseX)/10;
+  tempy = ( cue.y - mouseY)/10;
+  cue.dx = tempx;
+  cue.dy = tempy;
+  
 }
