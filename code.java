@@ -19,6 +19,8 @@ float ballY[] = new float[16];
 float ballDX[] = new float[16];
 float ballDY[] = new float[16];
 Ball cue, one, two, three, four, five;
+boolean overlap;
+int exit;
 
 // setup method
 
@@ -30,6 +32,10 @@ void setup()
   top = 150;
   bot = height - 75;
   mid = width/2;
+  ballX[0] = mid/2;
+  ballY[0] = (top + bot)/2;
+  ballDX[0] = 0;
+  ballDY[0] = 0;
   reset();
 }
 
@@ -48,38 +54,33 @@ void scene()
 
 void reset()
 {
-  ballX[0] = mid/2;
-  ballY[0] = (top + bot)/2;
-  ballDX[0] = 0;
-  ballDY[0] = 0;
-  for( int i = 1; i < 16; i = i + 1)
-  {
-    checkX[i] = random(mid + 30, right - 30);
-    checkY[i] = random(top + 30, bot - 30); 
-    ballDX[i] = 0;
-    ballDY[i] = 0;
-  }
   // Checks the placement of the second ball and doesnt let it spawn untill it 
   // isn't on top of another ball
   for( int i = 1; i < 16; i = i + 1)
   {
-    for( int j = 1; j < 16; j = j +1)
+    ballDX[i] = 0;
+    ballDY[i] = 0;
+    overlap = true;
+    while(overlap == true)
     {
-      if( j == i)
-      {
-        // avoids an infinte loop
-      }
-      else
-      {
-        while(dist(checkX[i], checkY[i], checkX[j], checkY[j] ) < 60)
-         {
-           checkX[i] = random(mid + 30, right - 30);
-           checkY[i] = random(top + 30, bot - 30);
-         }
-      }
+      checkX[i] = random(mid + 30, right - 30);
+      checkY[i] = random(top + 30, bot - 30);
+        for( int j = 0; j < i; j++)
+          {
+            if(dist(checkX[i], checkY[i], checkX[j], checkY[j] ) < 60)
+             {
+               overlap = true;
+             }
+             else
+             {
+               overlap = false;
+             }
+          }
     }
+    
     ballX[i] = checkX[i];
     ballY[i] = checkY[i];
+    
   }
   cue = new Ball(ballX[0], ballY[0], ballDX[0], ballDY[0], #FFFFFF);
   one = new Ball(ballX[1], ballY[1], ballDX[1], ballDY[1], #FADD35);
