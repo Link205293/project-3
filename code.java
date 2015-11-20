@@ -67,8 +67,7 @@ void reset()
     {
       if( j == i)
       {
-        ballX[i] = checkX[i];
-        ballY[i] = checkY[i];
+        // avoids an infinte loop
       }
       else
       {
@@ -78,8 +77,9 @@ void reset()
            checkY[i] = random(top + 30, bot - 30);
          }
       }
-       
     }
+    ballX[i] = checkX[i];
+    ballY[i] = checkY[i];
   }
   cue = new Ball(ballX[0], ballY[0], ballDX[0], ballDY[0], #FFFFFF);
   one = new Ball(ballX[1], ballY[1], ballDX[1], ballDY[1], #FADD35);
